@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.production.noteflow.ui.navigation.AppNavGraph
 import com.production.noteflow.ui.screen.dashboard.DashboardScreen
 import com.production.noteflow.ui.theme.NoteFlowTheme
 
@@ -20,16 +21,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             NoteFlowTheme {
-                DashboardScreen()
+                AppNavGraph()
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DashboardPreview() {
-    NoteFlowTheme {
-        DashboardScreen()
     }
 }

@@ -34,11 +34,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.production.noteflow.data.SampleData.sampleItems
 import com.production.noteflow.model.UiItem
 import com.production.noteflow.ui.components.ItemCard
 import com.production.noteflow.ui.components.StatCard
+import com.production.noteflow.ui.theme.NoteFlowTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -171,5 +173,14 @@ fun DashboardScreen(
                 Spacer(Modifier.height(80.dp))
             }
         }
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun DashboardPreview() {
+    NoteFlowTheme {
+        DashboardScreen()
     }
 }
