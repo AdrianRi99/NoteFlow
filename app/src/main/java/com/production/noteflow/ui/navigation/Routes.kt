@@ -4,4 +4,5 @@ object Routes {
     const val DASHBOARD = "dashboard"
     const val NOTE_DETAIL = "noteDetail"
     const val NOTE_ID = "noteId"
+    const val CREATE_NOTE = "createNote"
 }
