@@ -5,14 +5,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.production.noteflow.data.local.NoteEntity
 import com.production.noteflow.data.repository.NoteRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.UUID
+import javax.inject.Inject
 
-class CreateNoteViewModel(
+@HiltViewModel
+class CreateNoteViewModel @Inject constructor(
     private val repository: NoteRepository
 ) : ViewModel() {
 
@@ -28,21 +30,10 @@ class CreateNoteViewModel(
     var selectedTag by mutableStateOf("Work")
         private set
 
-    fun onTitleChange(value: String) {
-        title = value
-    }
-
-    fun onSubtitleChange(value: String) {
-        subtitle = value
-    }
-
-    fun onContentChange(value: String) {
-        content = value
-    }
-
-    fun onTagChange(value: String) {
-        selectedTag = value
-    }
+    fun onTitleChange(value: String) { title = value }
+    fun onSubtitleChange(value: String) { subtitle = value }
+    fun onContentChange(value: String) { content = value }
+    fun onTagChange(value: String) { selectedTag = value }
 
     fun saveNote(onSaved: () -> Unit) {
         if (title.isBlank()) return
@@ -60,14 +51,5 @@ class CreateNoteViewModel(
             )
             onSaved()
         }
-    }
-}
-
-class CreateNoteViewModelFactory(
-    private val repository: NoteRepository
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return CreateNoteViewModel(repository) as T
     }
 }

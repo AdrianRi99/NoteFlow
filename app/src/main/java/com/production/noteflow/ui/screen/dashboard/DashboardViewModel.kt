@@ -1,22 +1,25 @@
 package com.production.noteflow.ui.screen.dashboard
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import com.production.noteflow.data.local.NoteEntity
 import com.production.noteflow.data.repository.NoteRepository
-import kotlinx.coroutines.flow.Flow
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import javax.inject.Inject
 
-class DashboardViewModel(
+@HiltViewModel
+class DashboardViewModel @Inject constructor(
     repository: NoteRepository
 ) : ViewModel() {
-    val notes: Flow<List<NoteEntity>> = repository.getNotes()
-}
 
-class DashboardViewModelFactory(
-    private val repository: NoteRepository
-) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return DashboardViewModel(repository) as T
-    }
+    val notes: StateFlow<List<NoteEntity>> = repository
+        .getNotes()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList()
+        )
 }

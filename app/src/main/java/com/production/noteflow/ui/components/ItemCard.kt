@@ -16,11 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.production.noteflow.model.UiItem
-
+import com.production.noteflow.data.local.NoteEntity
 
 @Composable
-fun ItemCard(item: UiItem, onClick: () -> Unit) {
+fun ItemCard(
+    item: NoteEntity,
+    onClick: () -> Unit
+) {
     ElevatedCard(
         onClick = onClick,
         shape = RoundedCornerShape(20.dp),
@@ -30,7 +32,6 @@ fun ItemCard(item: UiItem, onClick: () -> Unit) {
             Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // "Avatar"/Icon Platzhalter
             Surface(
                 color = MaterialTheme.colorScheme.primaryContainer,
                 shape = RoundedCornerShape(14.dp),
@@ -57,7 +58,7 @@ fun ItemCard(item: UiItem, onClick: () -> Unit) {
             }
 
             AssistChip(
-                onClick = { /* optional */ },
+                onClick = {},
                 label = { Text(item.tag) }
             )
         }

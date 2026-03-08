@@ -14,12 +14,3 @@ data class NoteEntity(
     val content: String,
     val createdAt: Long,
 )
-
-fun NoteEntity.toUiItem(): UiItem {
-    return UiItem(
-        id = id,
-        title = title,
-        subtitle = subtitle,
-        tag = tag
-    )
-}

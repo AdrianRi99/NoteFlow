@@ -13,7 +13,7 @@ interface NoteDao {
     fun getNotes(): Flow<List<NoteEntity>>
 
     @Query("SELECT * FROM notes WHERE id = :id LIMIT 1")
-    suspend fun getNoteById(id: String): NoteEntity?
+    fun getNoteById(id: String): Flow<NoteEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(note: NoteEntity)

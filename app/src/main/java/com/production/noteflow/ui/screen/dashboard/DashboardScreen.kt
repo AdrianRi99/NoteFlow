@@ -37,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.production.noteflow.data.SampleData.sampleItems
+import com.production.noteflow.data.local.NoteEntity
 import com.production.noteflow.model.UiItem
 import com.production.noteflow.ui.components.ItemCard
 import com.production.noteflow.ui.components.StatCard
@@ -46,9 +47,9 @@ import com.production.noteflow.ui.theme.NoteFlowTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
-    items: List<UiItem> = sampleItems(),
+    items: List<NoteEntity>,
     onAddClick: () -> Unit = {},
-    onItemClick: (UiItem) -> Unit = {},
+    onItemClick: (NoteEntity) -> Unit = {},
 ) {
     var query by rememberSaveable { mutableStateOf("") }
     //rememberSaveable → überlebt Rotation
@@ -177,10 +178,10 @@ fun DashboardScreen(
 }
 
 
-@Preview(showBackground = true)
-@Composable
-fun DashboardPreview() {
-    NoteFlowTheme {
-        DashboardScreen()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DashboardPreview() {
+//    NoteFlowTheme {
+//        DashboardScreen()
+//    }
+//}
