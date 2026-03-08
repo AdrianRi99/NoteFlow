@@ -11,11 +11,12 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class NoteDetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    repository: NoteRepository
+    private val repository: NoteRepository
 ) : ViewModel() {
 
     private val noteId: String = checkNotNull(savedStateHandle[Routes.NOTE_ID])
@@ -33,4 +34,13 @@ class NoteDetailViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = NoteDetailUiState()
         )
+
+    fun deleteCurrentNote(onDeleted: () -> Unit) {
+        val note = uiState.value.note ?: return
+
+        viewModelScope.launch {
+            repository.deleteNote(note)
+            onDeleted()
+        }
+    }
 }

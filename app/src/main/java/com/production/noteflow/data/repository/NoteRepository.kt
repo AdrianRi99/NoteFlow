@@ -15,4 +15,8 @@ class NoteRepository @Inject constructor(
     fun getNoteById(id: String): Flow<NoteEntity?> = noteDao.getNoteById(id)
 
     suspend fun insertNote(note: NoteEntity) = noteDao.insertNote(note)
+
+    suspend fun updateNote(note: NoteEntity) = noteDao.updateNote(note)
+
+    suspend fun deleteNote(note: NoteEntity) = noteDao.deleteNote(note)
 }

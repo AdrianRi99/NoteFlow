@@ -6,10 +6,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
@@ -20,8 +22,11 @@ import androidx.compose.ui.unit.dp
 fun NoteDetailScreen(
     uiState: NoteDetailUiState,
     onBack: () -> Unit,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
 ) {
     val note = uiState.note
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -39,8 +44,14 @@ fun NoteDetailScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* TODO Edit */ }) {
+//                    IconButton(onClick = { /* TODO Edit */ }) {
+//                        Icon(Icons.Default.Edit, contentDescription = "Bearbeiten")
+//                    }
+                    IconButton(onClick = onEdit) {
                         Icon(Icons.Default.Edit, contentDescription = "Bearbeiten")
+                    }
+                    IconButton(onClick = { showDeleteDialog = true }) {
+                        Icon(Icons.Default.Delete, contentDescription = "Löschen")
                     }
                 }
             )
@@ -157,6 +168,29 @@ fun NoteDetailScreen(
                 }
             }
         }
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Notiz löschen?") },
+            text = { Text("Diese Aktion kann nicht rückgängig gemacht werden.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDeleteDialog = false
+                        onDelete()
+                    }
+                ) {
+                    Text("Löschen")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Abbrechen")
+                }
+            }
+        )
     }
 }
 

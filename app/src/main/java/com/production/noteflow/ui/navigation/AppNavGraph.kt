@@ -16,6 +16,8 @@ import com.production.noteflow.ui.screen.dashboard.DashboardScreen
 import com.production.noteflow.ui.screen.dashboard.DashboardViewModel
 import com.production.noteflow.ui.screen.detail.NoteDetailScreen
 import com.production.noteflow.ui.screen.detail.NoteDetailViewModel
+import com.production.noteflow.ui.screen.edit.EditNoteScreen
+import com.production.noteflow.ui.screen.edit.EditNoteViewModel
 
 @Composable
 fun AppNavGraph() {
@@ -61,8 +63,34 @@ fun AppNavGraph() {
 
             NoteDetailScreen(
                 uiState = uiState,
-                onBack = { navController.popBackStack() }
+                onBack = { navController.popBackStack() },
+                onEdit = {
+                    val noteId = uiState.note?.id ?: return@NoteDetailScreen
+                    navController.navigate("${Routes.EDIT_NOTE}/$noteId")
+                },
+                onDelete = {
+                    viewModel.deleteCurrentNote {
+                        navController.popBackStack()
+                    }
+                }
             )
         }
+
+        composable(
+            route = "${Routes.EDIT_NOTE}/{${Routes.NOTE_ID}}",
+            arguments = listOf(navArgument(Routes.NOTE_ID) { type = NavType.StringType })
+        ) {
+            val viewModel: EditNoteViewModel = hiltViewModel()
+
+            EditNoteScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onSaved = { navController.popBackStack() },
+                onDeleted = {
+                    navController.popBackStack(Routes.DASHBOARD, false)
+                }
+            )
+        }
+
     }
 }
