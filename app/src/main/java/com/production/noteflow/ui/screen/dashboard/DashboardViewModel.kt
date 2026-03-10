@@ -2,7 +2,7 @@ package com.production.noteflow.ui.screen.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.production.noteflow.data.local.NoteEntity
+import com.production.noteflow.data.local.entities.NoteEntity
 import com.production.noteflow.data.repository.NoteRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted

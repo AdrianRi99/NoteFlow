@@ -1,7 +1,7 @@
 package com.production.noteflow.data.repository
 
-import com.production.noteflow.data.local.NoteDao
-import com.production.noteflow.data.local.NoteEntity
+import com.production.noteflow.data.local.daos.NoteDao
+import com.production.noteflow.data.local.entities.NoteEntity
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,6 +13,8 @@ class NoteRepository @Inject constructor(
     fun getNotes(): Flow<List<NoteEntity>> = noteDao.getNotes()
 
     fun getNoteById(id: String): Flow<NoteEntity?> = noteDao.getNoteById(id)
+
+    suspend fun getNoteByIdOnce(id: String): NoteEntity? = noteDao.getNoteByIdOnce(id)
 
     suspend fun insertNote(note: NoteEntity) = noteDao.insertNote(note)
 

@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.production.noteflow.domain.NoteTags
+import com.production.noteflow.ui.components.ReminderEditorCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -258,6 +259,12 @@ fun EditNoteScreen(
                         .height(180.dp),
                     label = { Text("Inhalt") },
                     shape = RoundedCornerShape(16.dp)
+                )
+
+                ReminderEditorCard(
+                    reminders = viewModel.reminders,
+                    onToggleDay = viewModel::toggleReminderDay,
+                    onTimeChange = viewModel::updateReminderTime
                 )
 
                 Spacer(Modifier.height(96.dp))

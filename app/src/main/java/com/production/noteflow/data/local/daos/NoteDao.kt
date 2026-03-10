@@ -1,4 +1,4 @@
-package com.production.noteflow.data.local
+package com.production.noteflow.data.local.daos
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.production.noteflow.data.local.entities.NoteEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -17,7 +18,10 @@ interface NoteDao {
     @Query("SELECT * FROM notes WHERE id = :id LIMIT 1")
     fun getNoteById(id: String): Flow<NoteEntity?>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Query("SELECT * FROM notes WHERE id = :id LIMIT 1")
+    suspend fun getNoteByIdOnce(id: String): NoteEntity?
+
+    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun insertNote(note: NoteEntity)
 
     @Update

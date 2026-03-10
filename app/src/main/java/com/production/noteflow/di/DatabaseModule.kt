@@ -3,7 +3,8 @@ package com.production.noteflow.di
 import android.content.Context
 import androidx.room.Room
 import com.production.noteflow.data.local.AppDatabase
-import com.production.noteflow.data.local.NoteDao
+import com.production.noteflow.data.local.daos.NoteDao
+import com.production.noteflow.data.local.daos.ReminderDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,4 +32,9 @@ object DatabaseModule {
     fun provideNoteDao(
         database: AppDatabase
     ): NoteDao = database.noteDao()
+
+    @Provides
+    fun provideReminderDao(database: AppDatabase): ReminderDao = database.reminderDao()
+
+
 }

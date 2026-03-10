@@ -40,6 +40,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.production.noteflow.data.local.entities.ReminderEntity
+import com.production.noteflow.domain.ReminderDraft
+import com.production.noteflow.ui.components.ReminderEditorDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,10 +50,9 @@ fun NoteDetailScreen(
     uiState: NoteDetailUiState,
     onBack: () -> Unit,
     onEdit: () -> Unit,
-    onDelete: () -> Unit,
+    onDelete: () -> Unit
 ) {
     val note = uiState.note
-    var showDeleteDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -71,17 +73,7 @@ fun NoteDetailScreen(
                     IconButton(onClick = onEdit) {
                         Icon(Icons.Default.Edit, contentDescription = "Bearbeiten")
                     }
-//                    IconButton(onClick = { showDeleteDialog = true }) {
-//                        Icon(Icons.Default.Delete, contentDescription = "Löschen")
-//                    }
                 }
-            )
-        },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { /* reminder */ },
-                icon = { Icon(Icons.Default.Notifications, contentDescription = null) },
-                text = { Text("Reminder") }
             )
         }
     ) { padding ->
@@ -199,32 +191,44 @@ fun NoteDetailScreen(
                         }
                     }
 
+                    if (uiState.reminders.isNotEmpty()) {
+                        ElevatedCard(
+                            shape = RoundedCornerShape(20.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(16.dp),
+                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Text(
+                                    text = "Reminder",
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+
+                                uiState.reminders.forEach { reminder ->
+                                    val dayLabel = when (reminder.dayOfWeek) {
+                                        1 -> "Mo"
+                                        2 -> "Di"
+                                        3 -> "Mi"
+                                        4 -> "Do"
+                                        5 -> "Fr"
+                                        6 -> "Sa"
+                                        else -> "So"
+                                    }
+
+                                    Text(
+                                        text = "$dayLabel • %02d:%02d".format(reminder.hour, reminder.minute),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+                    }
+
                     Spacer(Modifier.height(80.dp))
                 }
             }
         }
-    }
-
-    if (showDeleteDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Notiz löschen?") },
-            text = { Text("Diese Aktion kann nicht rückgängig gemacht werden.") },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        showDeleteDialog = false
-                        onDelete()
-                    }
-                ) {
-                    Text("Löschen")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Abbrechen")
-                }
-            }
-        )
     }
 }

@@ -33,7 +33,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.production.noteflow.data.local.NoteEntity
+import com.production.noteflow.data.local.entities.NoteEntity
 import com.production.noteflow.ui.components.ItemCard
 import com.production.noteflow.ui.components.StatCard
 

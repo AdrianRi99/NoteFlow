@@ -6,18 +6,25 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.production.noteflow.data.local.NoteEntity
+import com.production.noteflow.data.local.entities.NoteEntity
+import com.production.noteflow.data.local.entities.ReminderEntity
 import com.production.noteflow.data.repository.NoteRepository
+import com.production.noteflow.data.repository.ReminderRepository
+import com.production.noteflow.domain.ReminderDraft
+import com.production.noteflow.services.reminder.ReminderScheduler
 import com.production.noteflow.ui.navigation.Routes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.util.UUID
 
 @HiltViewModel
 class EditNoteViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val repository: NoteRepository
+    private val noteRepository: NoteRepository,
+    private val reminderRepository: ReminderRepository,
+    private val reminderScheduler: ReminderScheduler
 ) : ViewModel() {
 
     private val noteId: String = checkNotNull(savedStateHandle[Routes.NOTE_ID])
@@ -34,12 +41,14 @@ class EditNoteViewModel @Inject constructor(
     var content by mutableStateOf("")
         private set
 
-    var selectedTag by mutableStateOf("Work")
+    var selectedTag by mutableStateOf("Ideas")
         private set
 
     var selectedImageUri by mutableStateOf<String?>(null)
         private set
 
+    var reminders by mutableStateOf(defaultReminderDrafts())
+        private set
 
     private var originalNote: NoteEntity? = null
 
@@ -49,7 +58,9 @@ class EditNoteViewModel @Inject constructor(
 
     private fun loadNote() {
         viewModelScope.launch {
-            val note = repository.getNoteById(noteId).firstOrNull()
+            val note = noteRepository.getNoteById(noteId).first()
+            val reminderEntities = reminderRepository.getRemindersForNoteOnce(noteId)
+
             originalNote = note
 
             if (note != null) {
@@ -60,6 +71,19 @@ class EditNoteViewModel @Inject constructor(
                 selectedImageUri = note.imageUri
             }
 
+            reminders = defaultReminderDrafts().map { draft ->
+                val existing = reminderEntities.firstOrNull { it.dayOfWeek == draft.dayOfWeek }
+                if (existing != null) {
+                    draft.copy(
+                        enabled = true,
+                        hour = existing.hour,
+                        minute = existing.minute
+                    )
+                } else {
+                    draft
+                }
+            }
+
             isLoading = false
         }
     }
@@ -68,13 +92,21 @@ class EditNoteViewModel @Inject constructor(
     fun onSubtitleChange(value: String) { subtitle = value }
     fun onContentChange(value: String) { content = value }
     fun onTagChange(value: String) { selectedTag = value }
+    fun onImageSelected(uri: String?) { selectedImageUri = uri }
+    fun removeImage() { selectedImageUri = null }
 
-    fun onImageSelected(uri: String?) {
-        selectedImageUri = uri
+    fun toggleReminderDay(dayOfWeek: Int) {
+        reminders = reminders.map {
+            if (it.dayOfWeek == dayOfWeek) it.copy(enabled = !it.enabled) else it
+        }
     }
 
-    fun removeImage() {
-        selectedImageUri = null
+    fun updateReminderTime(dayOfWeek: Int, hour: Int, minute: Int) {
+        reminders = reminders.map {
+            if (it.dayOfWeek == dayOfWeek) {
+                it.copy(hour = hour, minute = minute)
+            } else it
+        }
     }
 
     fun updateNote(onSaved: () -> Unit) {
@@ -82,7 +114,7 @@ class EditNoteViewModel @Inject constructor(
         if (title.isBlank()) return
 
         viewModelScope.launch {
-            repository.updateNote(
+            noteRepository.updateNote(
                 note.copy(
                     title = title.trim(),
                     subtitle = subtitle.trim(),
@@ -91,6 +123,26 @@ class EditNoteViewModel @Inject constructor(
                     imageUri = selectedImageUri
                 )
             )
+
+            val oldReminders = reminderRepository.getRemindersForNoteOnce(noteId)
+            oldReminders.forEach(reminderScheduler::cancel)
+
+            val newReminders = reminders
+                .filter { it.enabled }
+                .map {
+                    ReminderEntity(
+                        id = UUID.randomUUID().toString(),
+                        noteId = noteId,
+                        dayOfWeek = it.dayOfWeek,
+                        hour = it.hour,
+                        minute = it.minute,
+                        enabled = true
+                    )
+                }
+
+            reminderRepository.replaceRemindersForNote(noteId, newReminders)
+            newReminders.forEach(reminderScheduler::schedule)
+
             onSaved()
         }
     }
@@ -99,8 +151,22 @@ class EditNoteViewModel @Inject constructor(
         val note = originalNote ?: return
 
         viewModelScope.launch {
-            repository.deleteNote(note)
+            val oldReminders = reminderRepository.getRemindersForNoteOnce(noteId)
+            oldReminders.forEach(reminderScheduler::cancel)
+            noteRepository.deleteNote(note)
             onDeleted()
         }
+    }
+
+    private companion object {
+        fun defaultReminderDrafts() = listOf(
+            ReminderDraft(1, false, 9, 0),
+            ReminderDraft(2, false, 9, 0),
+            ReminderDraft(3, false, 9, 0),
+            ReminderDraft(4, false, 9, 0),
+            ReminderDraft(5, false, 9, 0),
+            ReminderDraft(6, false, 9, 0),
+            ReminderDraft(7, false, 9, 0)
+        )
     }
 }

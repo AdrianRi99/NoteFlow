@@ -19,7 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.production.noteflow.data.local.NoteEntity
+import com.production.noteflow.data.local.entities.NoteEntity
 
 @Composable
 fun ItemCard(
