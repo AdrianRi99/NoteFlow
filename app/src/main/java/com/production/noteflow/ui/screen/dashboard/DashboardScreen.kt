@@ -14,7 +14,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedCard
@@ -22,7 +21,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -34,14 +32,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.production.noteflow.data.SampleData.sampleItems
 import com.production.noteflow.data.local.NoteEntity
-import com.production.noteflow.model.UiItem
 import com.production.noteflow.ui.components.ItemCard
 import com.production.noteflow.ui.components.StatCard
-import com.production.noteflow.ui.theme.NoteFlowTheme
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,11 +64,11 @@ fun DashboardScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text("Dashboard") },
-                actions = {
-                    IconButton(onClick = { /* TODO */ }) {
-                        Icon(Icons.Default.Notifications, contentDescription = "Notifications")
-                    }
-                }
+//                actions = {
+//                    IconButton(onClick = { /* TODO */ }) {
+//                        Icon(Icons.Default.Notifications, contentDescription = "Notifications")
+//                    }
+//                }
             )
         },
         floatingActionButton = {
@@ -104,7 +98,7 @@ fun DashboardScreen(
                             style = MaterialTheme.typography.titleLarge
                         )
                         Text(
-                            "Hier ist ein kompaktes Layout mit den wichtigsten Compose-Design-Bausteinen.",
+                            "Erstelle und organisiere deine Notizen übersichtlich an einem Ort.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

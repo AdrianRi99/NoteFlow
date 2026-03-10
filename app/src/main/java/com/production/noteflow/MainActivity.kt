@@ -14,17 +14,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-//        val db = Room.databaseBuilder(
-//            applicationContext,
-//            AppDatabase::class.java,
-//            "notes_db"
-//        ).build()
-//
-//        val repository = NoteRepository(db.noteDao())
-
         setContent {
             NoteFlowTheme {
-//                AppNavGraph(repository = repository)
                 AppNavGraph()
             }
         }

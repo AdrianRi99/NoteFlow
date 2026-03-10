@@ -30,10 +30,21 @@ class CreateNoteViewModel @Inject constructor(
     var selectedTag by mutableStateOf("Work")
         private set
 
+    var selectedImageUri by mutableStateOf<String?>(null)
+        private set
+
     fun onTitleChange(value: String) { title = value }
     fun onSubtitleChange(value: String) { subtitle = value }
     fun onContentChange(value: String) { content = value }
     fun onTagChange(value: String) { selectedTag = value }
+
+    fun onImageSelected(uri: String?) {
+        selectedImageUri = uri
+    }
+
+    fun removeImage() {
+        selectedImageUri = null
+    }
 
     fun saveNote(onSaved: () -> Unit) {
         if (title.isBlank()) return
@@ -46,7 +57,8 @@ class CreateNoteViewModel @Inject constructor(
                     subtitle = subtitle.trim(),
                     tag = selectedTag,
                     content = content.trim(),
-                    createdAt = System.currentTimeMillis()
+                    createdAt = System.currentTimeMillis(),
+                    imageUri = selectedImageUri
                 )
             )
             onSaved()

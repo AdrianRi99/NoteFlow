@@ -37,6 +37,10 @@ class EditNoteViewModel @Inject constructor(
     var selectedTag by mutableStateOf("Work")
         private set
 
+    var selectedImageUri by mutableStateOf<String?>(null)
+        private set
+
+
     private var originalNote: NoteEntity? = null
 
     init {
@@ -53,6 +57,7 @@ class EditNoteViewModel @Inject constructor(
                 subtitle = note.subtitle
                 content = note.content
                 selectedTag = note.tag
+                selectedImageUri = note.imageUri
             }
 
             isLoading = false
@@ -64,6 +69,14 @@ class EditNoteViewModel @Inject constructor(
     fun onContentChange(value: String) { content = value }
     fun onTagChange(value: String) { selectedTag = value }
 
+    fun onImageSelected(uri: String?) {
+        selectedImageUri = uri
+    }
+
+    fun removeImage() {
+        selectedImageUri = null
+    }
+
     fun updateNote(onSaved: () -> Unit) {
         val note = originalNote ?: return
         if (title.isBlank()) return
@@ -74,7 +87,8 @@ class EditNoteViewModel @Inject constructor(
                     title = title.trim(),
                     subtitle = subtitle.trim(),
                     content = content.trim(),
-                    tag = selectedTag
+                    tag = selectedTag,
+                    imageUri = selectedImageUri
                 )
             )
             onSaved()

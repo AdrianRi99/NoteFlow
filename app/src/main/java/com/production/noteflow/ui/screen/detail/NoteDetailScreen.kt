@@ -1,6 +1,15 @@
 package com.production.noteflow.ui.screen.detail
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -9,13 +18,28 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,7 +57,7 @@ fun NoteDetailScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = note?.title ?: "Notiz",
+                        text = "Deine Notiz",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -44,21 +68,18 @@ fun NoteDetailScreen(
                     }
                 },
                 actions = {
-//                    IconButton(onClick = { /* TODO Edit */ }) {
-//                        Icon(Icons.Default.Edit, contentDescription = "Bearbeiten")
-//                    }
                     IconButton(onClick = onEdit) {
                         Icon(Icons.Default.Edit, contentDescription = "Bearbeiten")
                     }
-                    IconButton(onClick = { showDeleteDialog = true }) {
-                        Icon(Icons.Default.Delete, contentDescription = "Löschen")
-                    }
+//                    IconButton(onClick = { showDeleteDialog = true }) {
+//                        Icon(Icons.Default.Delete, contentDescription = "Löschen")
+//                    }
                 }
             )
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { /* TODO Reminder */ },
+                onClick = { /* reminder */ },
                 icon = { Icon(Icons.Default.Notifications, contentDescription = null) },
                 text = { Text("Reminder") }
             )
@@ -84,10 +105,7 @@ fun NoteDetailScreen(
                         .padding(24.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        text = "Diese Notiz wurde nicht gefunden.",
-                        style = MaterialTheme.typography.bodyLarge
-                    )
+                    Text("Diese Notiz wurde nicht gefunden.")
                 }
             }
 
@@ -100,48 +118,65 @@ fun NoteDetailScreen(
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+
                     ElevatedCard(
                         shape = RoundedCornerShape(20.dp),
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Box(
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp)
+                                .padding(16.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .align(Alignment.CenterStart)
-                                    .padding(end = 88.dp),
-                                verticalArrangement = Arrangement.spacedBy(6.dp)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End
                             ) {
-                                Text(
-                                    text = note.title,
-                                    style = MaterialTheme.typography.titleLarge
-                                )
-                                Text(
-                                    text = note.subtitle,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Spacer(Modifier.height(6.dp))
-                                AssistChip(
-                                    onClick = {},
-                                    label = { Text(note.tag) }
-                                )
+                                Surface(
+                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    shape = RoundedCornerShape(16.dp)
+                                ) {
+                                    Text(
+                                        text = note.tag,
+                                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                                        style = MaterialTheme.typography.labelLarge
+                                    )
+                                }
                             }
 
-                            Surface(
-                                color = MaterialTheme.colorScheme.primaryContainer,
-                                shape = RoundedCornerShape(16.dp),
-                                modifier = Modifier.align(Alignment.TopEnd)
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
+                                if (!note.imageUri.isNullOrBlank()) {
+                                    AsyncImage(
+                                        model = note.imageUri,
+                                        contentDescription = "Notizbild",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier
+                                            .size(104.dp)
+                                            .clip(RoundedCornerShape(16.dp))
+                                    )
+                                }
+
                                 Column(
-                                    modifier = Modifier.padding(12.dp),
-                                    horizontalAlignment = Alignment.End
+                                    modifier = Modifier.weight(1f),
+                                    verticalArrangement = Arrangement.spacedBy(6.dp)
                                 ) {
-                                    Text("Status", style = MaterialTheme.typography.labelLarge)
-                                    Text("Saved", style = MaterialTheme.typography.titleMedium)
+                                    Text(
+                                        text = note.title,
+                                        style = MaterialTheme.typography.titleLarge
+                                    )
+
+                                    if (note.subtitle.isNotBlank()) {
+                                        Text(
+                                            text = note.subtitle,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -152,7 +187,7 @@ fun NoteDetailScreen(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(
-                            Modifier.padding(16.dp),
+                            modifier = Modifier.padding(16.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             Text("Inhalt", style = MaterialTheme.typography.titleMedium)
@@ -193,23 +228,3 @@ fun NoteDetailScreen(
         )
     }
 }
-
-
-//@Preview(showBackground = true)
-//@Composable
-//fun NoteDetailScreenPreview() {
-//
-//    val sampleItem = UiItem(
-//        id = "1",
-//        title = "Compose Navigation",
-//        subtitle = "Understanding how navigation works in Jetpack Compose.",
-//        tag = "Android"
-//    )
-//
-//    MaterialTheme {
-//        NoteDetailScreen(
-//            item = sampleItem,
-//            onBack = {}
-//        )
-//    }
-//}
