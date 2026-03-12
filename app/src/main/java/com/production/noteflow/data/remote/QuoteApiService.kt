@@ -18,9 +18,9 @@ class QuoteApiService @Inject constructor(
             .body()
     }
 
-    suspend fun debugRandomQuote(): String {
-        return httpClient
-            .get("https://dummyjson.com/quotes/random")
-            .bodyAsText()
-    }
+//    suspend fun debugRandomQuote(): String {
+//        return httpClient
+//            .get("https://dummyjson.com/quotes/random")
+//            .bodyAsText()
+//    }
 }

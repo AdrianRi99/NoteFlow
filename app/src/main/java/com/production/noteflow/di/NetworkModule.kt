@@ -56,9 +56,9 @@ object NetworkModule {
         httpClient: HttpClient
     ): QuoteApiService = QuoteApiService(httpClient)
 
-    @Provides
-    @Singleton
-    fun provideQuoteRepository(
-        quoteApiService: QuoteApiService
-    ): QuoteRepository = QuoteRepository(quoteApiService)
+//    @Provides
+//    @Singleton
+//    fun provideQuoteRepository(
+//        quoteApiService: QuoteApiService
+//    ): QuoteRepository = QuoteRepository(quoteApiService)
 }

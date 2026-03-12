@@ -5,6 +5,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -16,12 +17,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.outlined.AddPhotoAlternate
+import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -74,7 +79,7 @@ fun EditNoteScreen(
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { viewModel.updateNote(onSaved) },
-                icon = { Icon(Icons.Default.Send, contentDescription = null) },
+                icon = { Icon(Icons.Default.Save, contentDescription = null) },
                 text = { Text("Speichern") }
             )
         }
@@ -182,18 +187,24 @@ fun EditNoteScreen(
                         Surface(
                             modifier = Modifier
                                 .size(104.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.outline,
+                                    shape = RoundedCornerShape(16.dp)
+                                )
                                 .clickable {
                                     pickMedia.launch(
                                         PickVisualMediaRequest(PickVisualMedia.ImageOnly)
                                     )
                                 },
                             shape = RoundedCornerShape(16.dp),
-                            color = MaterialTheme.colorScheme.primaryContainer
+                            color = Color.Transparent
                         ) {
                             Box(contentAlignment = Alignment.Center) {
                                 Icon(
-                                    Icons.Default.Edit,
-                                    contentDescription = "Bild auswählen"
+                                    imageVector = Icons.Outlined.AddPhotoAlternate,
+                                    contentDescription = "Bild auswählen",
+                                    modifier = Modifier.size(32.dp)
                                 )
                             }
                         }

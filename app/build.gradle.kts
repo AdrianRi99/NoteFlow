@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation("androidx.compose.material:material-icons-extended")
     implementation(libs.androidx.navigation.compose)
 
     // Room
@@ -63,6 +64,15 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    // WorkManager
+    implementation("androidx.work:work-runtime-ktx:2.11.1")
+    implementation("androidx.hilt:hilt-work:1.3.0")
+    ksp("androidx.hilt:hilt-compiler:1.3.0")
+
+
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.2.1")
 
     //Ktor client
     implementation("io.ktor:ktor-client-core:3.4.1")
