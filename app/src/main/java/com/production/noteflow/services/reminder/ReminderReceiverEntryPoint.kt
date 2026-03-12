@@ -1,7 +1,7 @@
 package com.production.noteflow.services.reminder
 
-import com.production.noteflow.data.repository.NoteRepository
-import com.production.noteflow.data.repository.ReminderRepository
+import com.production.noteflow.data.local.repository.NoteRepository
+import com.production.noteflow.data.local.repository.ReminderRepository
 import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent

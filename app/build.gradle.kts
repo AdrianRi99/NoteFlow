@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
+
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
 android {
@@ -61,6 +63,15 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    //Ktor client
+    implementation("io.ktor:ktor-client-core:3.4.1")
+    implementation("io.ktor:ktor-client-okhttp:3.4.1")
+    implementation("io.ktor:ktor-client-content-negotiation:3.4.1")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:3.4.1")
+    implementation("io.ktor:ktor-client-logging:3.4.1")
+    //Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.10.0")
 
     //Images
     implementation("io.coil-kt.coil3:coil-compose:3.4.0")

@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.production.noteflow.data.local.entities.NoteEntity
 import com.production.noteflow.data.local.entities.ReminderEntity
-import com.production.noteflow.data.repository.NoteRepository
-import com.production.noteflow.data.repository.ReminderRepository
+import com.production.noteflow.data.local.repository.NoteRepository
+import com.production.noteflow.data.local.repository.ReminderRepository
 import com.production.noteflow.domain.ReminderDraft
 import com.production.noteflow.services.reminder.ReminderScheduler
 import com.production.noteflow.ui.navigation.Routes

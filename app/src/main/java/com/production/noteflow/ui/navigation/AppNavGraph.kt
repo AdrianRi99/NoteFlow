@@ -30,9 +30,12 @@ fun AppNavGraph() {
         composable(Routes.DASHBOARD) {
             val viewModel: DashboardViewModel = hiltViewModel()
             val notes by viewModel.notes.collectAsStateWithLifecycle()
+            val quoteUiState by viewModel.quoteUiState.collectAsStateWithLifecycle()
 
             DashboardScreen (
                 items = notes,
+                quoteUiState = quoteUiState,
+                onRefreshQuote = viewModel::refreshQuote,
                 onAddClick = {
                     navController.navigate(Routes.CREATE_NOTE)
                 },

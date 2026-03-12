@@ -1,4 +1,4 @@
-package com.production.noteflow.data.repository
+package com.production.noteflow.data.local.repository
 
 import com.production.noteflow.data.local.daos.NoteDao
 import com.production.noteflow.data.local.entities.NoteEntity
