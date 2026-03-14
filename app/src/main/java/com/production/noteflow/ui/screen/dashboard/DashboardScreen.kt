@@ -241,37 +241,6 @@ fun DashboardScreen(
                     }
                 }
             }
-//            item {
-//                ElevatedCard(
-//                    shape = RoundedCornerShape(20.dp),
-//                    modifier = Modifier.fillMaxWidth()
-//                ) {
-//                    Column(
-//                        Modifier.padding(16.dp),
-//                        verticalArrangement = Arrangement.spacedBy(12.dp)
-//                    ) {
-//                        Text(
-//                            "Willkommen zurück 👋",
-//                            style = MaterialTheme.typography.titleLarge
-//                        )
-//                        Text(
-//                            "Erstelle und organisiere deine Notizen übersichtlich an einem Ort.",
-//                            style = MaterialTheme.typography.bodyMedium,
-//                            color = MaterialTheme.colorScheme.onSurfaceVariant
-//                        )
-//
-//                        OutlinedTextField(
-//                            value = query,
-//                            onValueChange = { query = it },
-//                            modifier = Modifier.fillMaxWidth(),
-//                            singleLine = true,
-//                            shape = RoundedCornerShape(14.dp),
-//                            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-//                            placeholder = { Text("Suche…") }
-//                        )
-//                    }
-//                }
-//            }
 
             item {
                 Row(

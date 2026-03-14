@@ -1,4 +1,4 @@
-package com.production.noteflow.data.local.repository
+package com.production.noteflow.data.local.datastore
 
 import android.content.Context
 import androidx.datastore.preferences.core.edit

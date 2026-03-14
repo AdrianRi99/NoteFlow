@@ -2,7 +2,7 @@ package com.production.noteflow.data.remote.repository
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.production.noteflow.data.local.repository.QuotePreferencesDataSource
+import com.production.noteflow.data.local.datastore.QuotePreferencesDataSource
 import com.production.noteflow.data.remote.QuoteApiService
 import com.production.noteflow.data.remote.dto.toDomain
 import com.production.noteflow.domain.StoredQuote
@@ -50,21 +50,3 @@ class QuoteRepository @Inject constructor(
         return lastDate == today
     }
 }
-
-//import android.util.Log
-//import com.production.noteflow.data.remote.QuoteApiService
-//import com.production.noteflow.data.remote.dto.toDomain
-//import com.production.noteflow.domain.Quote
-//import javax.inject.Inject
-//import javax.inject.Singleton
-//
-//@Singleton
-//class QuoteRepository @Inject constructor(
-//    private val quoteApiService: QuoteApiService
-//) {
-//    suspend fun getRandomQuote(): Quote {
-//
-//        Log.d("waaa", quoteApiService.debugRandomQuote())
-//        return quoteApiService.getRandomQuote().toDomain()
-//    }
-//}
