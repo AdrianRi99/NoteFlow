@@ -1,7 +1,7 @@
 package com.production.noteflow.data.remote.dto
 
 import kotlinx.serialization.Serializable
-import com.production.noteflow.domain.Quote
+import com.production.noteflow.domain.model.Quote
 
 @Serializable
 data class QuoteDto(

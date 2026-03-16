@@ -1,7 +1,7 @@
 package com.production.noteflow.di
 
-import com.production.noteflow.data.remote.QuoteApiService
-import com.production.noteflow.data.remote.repository.QuoteRepository
+import com.production.noteflow.data.remote.api.QuoteApiService
+import com.production.noteflow.data.repository.QuoteRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

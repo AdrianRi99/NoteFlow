@@ -1,7 +1,5 @@
 package com.production.noteflow.data
 
-import com.production.noteflow.domain.Quote
-
 object DummyData {
 
 //    val sampleQuotes = listOf(

@@ -5,8 +5,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
-import com.production.noteflow.domain.Quote
-import com.production.noteflow.domain.StoredQuote
+import com.production.noteflow.domain.model.Quote
+import com.production.noteflow.domain.model.StoredQuote
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

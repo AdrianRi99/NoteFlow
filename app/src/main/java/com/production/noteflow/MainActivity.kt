@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.production.noteflow.ui.navigation.AppNavGraph
-import com.production.noteflow.ui.theme.NoteFlowTheme
+import com.production.noteflow.app.navigation.AppNavGraph
+import com.production.noteflow.app.theme.NoteFlowTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

@@ -1,9 +1,9 @@
 package com.production.noteflow.di
 
-import com.production.noteflow.data.local.daos.NoteDao
-import com.production.noteflow.data.local.daos.ReminderDao
-import com.production.noteflow.data.local.repository.NoteRepository
-import com.production.noteflow.data.local.repository.ReminderRepository
+import com.production.noteflow.data.local.room.daos.NoteDao
+import com.production.noteflow.data.local.room.daos.ReminderDao
+import com.production.noteflow.data.repository.NoteRepository
+import com.production.noteflow.data.repository.ReminderRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

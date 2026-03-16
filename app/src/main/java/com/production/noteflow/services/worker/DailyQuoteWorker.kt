@@ -6,7 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.production.noteflow.data.remote.repository.QuoteRepository
+import com.production.noteflow.data.repository.QuoteRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 

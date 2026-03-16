@@ -2,9 +2,9 @@ package com.production.noteflow.di
 
 import android.content.Context
 import androidx.room.Room
-import com.production.noteflow.data.local.AppDatabase
-import com.production.noteflow.data.local.daos.NoteDao
-import com.production.noteflow.data.local.daos.ReminderDao
+import com.production.noteflow.data.local.room.AppDatabase
+import com.production.noteflow.data.local.room.daos.NoteDao
+import com.production.noteflow.data.local.room.daos.ReminderDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
