@@ -1,79 +1,35 @@
 package com.production.noteflow.presentation.screen.create
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.production.noteflow.domain.model.ReminderDraftFactory
 import com.production.noteflow.domain.usecase.note.CreateNoteUseCase
+import com.production.noteflow.presentation.common.BaseNoteEditorViewModel
+import com.production.noteflow.presentation.model.NoteEditorEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class CreateNoteViewModel @Inject constructor(
     private val createNoteUseCase: CreateNoteUseCase
-) : ViewModel() {
+) : BaseNoteEditorViewModel() {
 
-    var title by mutableStateOf("")
-        private set
+    fun saveNote() {
+        val state = uiState.value
 
-    var subtitle by mutableStateOf("")
-        private set
-
-    var content by mutableStateOf("")
-        private set
-
-    var selectedTag by mutableStateOf("Ideas")
-        private set
-
-    var selectedImageUri by mutableStateOf<String?>(null)
-        private set
-
-
-    var reminders by mutableStateOf(ReminderDraftFactory.defaultReminderDrafts())
-        private set
-
-    var errorMessage by mutableStateOf<String?>(null)
-        private set
-
-    fun onTitleChange(value: String) { title = value }
-    fun onSubtitleChange(value: String) { subtitle = value }
-    fun onContentChange(value: String) { content = value }
-    fun onTagChange(value: String) { selectedTag = value }
-    fun onImageSelected(uri: String?) { selectedImageUri = uri }
-    fun removeImage() { selectedImageUri = null }
-
-    fun toggleReminderDay(dayOfWeek: Int) {
-        reminders = reminders.map {
-            if (it.dayOfWeek == dayOfWeek) it.copy(enabled = !it.enabled) else it
-        }
-    }
-
-    fun updateReminderTime(dayOfWeek: Int, hour: Int, minute: Int) {
-        reminders = reminders.map {
-            if (it.dayOfWeek == dayOfWeek) {
-                it.copy(hour = hour, minute = minute)
-            } else {
-                it
-            }
-        }
-    }
-
-    fun saveNote(onSaved: () -> Unit) {
         viewModelScope.launch {
             createNoteUseCase(
-                title = title,
-                subtitle = subtitle,
-                content = content,
-                tag = selectedTag,
-                imageUri = selectedImageUri,
-                reminders = reminders
+                title = state.title,
+                subtitle = state.subtitle,
+                content = state.content,
+                tag = state.selectedTag,
+                imageUri = state.selectedImageUri,
+                reminders = state.reminders
             ).onSuccess {
-                onSaved()
-            }.onFailure {
-                errorMessage = it.message
+                sendEvent(NoteEditorEvent.Saved)
+            }.onFailure { throwable ->
+                val message = throwable.message ?: "Speichern fehlgeschlagen."
+                setError(message)
+                sendEvent(NoteEditorEvent.ShowError(message))
             }
         }
     }

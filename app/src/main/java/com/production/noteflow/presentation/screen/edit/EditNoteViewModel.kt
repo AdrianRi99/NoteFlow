@@ -1,10 +1,6 @@
 package com.production.noteflow.presentation.screen.edit
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.production.noteflow.app.navigation.Routes
 import com.production.noteflow.domain.model.Note
@@ -13,6 +9,9 @@ import com.production.noteflow.domain.usecase.note.DeleteNoteUseCase
 import com.production.noteflow.domain.usecase.note.GetNoteByIdUseCase
 import com.production.noteflow.domain.usecase.note.UpdateNoteUseCase
 import com.production.noteflow.domain.usecase.reminder.GetRemindersForNoteOnceUseCase
+import com.production.noteflow.presentation.common.BaseNoteEditorViewModel
+import com.production.noteflow.presentation.model.NoteEditorEvent
+import com.production.noteflow.presentation.model.NoteEditorFormState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.first
@@ -25,33 +24,9 @@ class EditNoteViewModel @Inject constructor(
     private val getRemindersForNoteOnceUseCase: GetRemindersForNoteOnceUseCase,
     private val updateNoteUseCase: UpdateNoteUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase
-) : ViewModel() {
+) : BaseNoteEditorViewModel() {
 
     private val noteId: String = checkNotNull(savedStateHandle[Routes.NOTE_ID])
-
-    var isLoading by mutableStateOf(true)
-        private set
-
-    var title by mutableStateOf("")
-        private set
-
-    var subtitle by mutableStateOf("")
-        private set
-
-    var content by mutableStateOf("")
-        private set
-
-    var selectedTag by mutableStateOf("Ideas")
-        private set
-
-    var selectedImageUri by mutableStateOf<String?>(null)
-        private set
-
-    var reminders by mutableStateOf(ReminderDraftFactory.defaultReminderDrafts())
-        private set
-
-    var errorMessage by mutableStateOf<String?>(null)
-        private set
 
     private var originalNote: Note? = null
 
@@ -61,20 +36,14 @@ class EditNoteViewModel @Inject constructor(
 
     private fun loadNote() {
         viewModelScope.launch {
+            setLoading(true)
+
             val note = getNoteByIdUseCase(noteId).first()
             val reminderModels = getRemindersForNoteOnceUseCase(noteId)
 
             originalNote = note
 
-            if (note != null) {
-                title = note.title
-                subtitle = note.subtitle
-                content = note.content
-                selectedTag = note.tag
-                selectedImageUri = note.imageUri
-            }
-
-            reminders = ReminderDraftFactory.defaultReminderDrafts().map { draft ->
+            val mergedReminders = ReminderDraftFactory.defaultReminderDrafts().map { draft ->
                 val existing = reminderModels.firstOrNull { it.dayOfWeek == draft.dayOfWeek }
                 if (existing != null) {
                     draft.copy(
@@ -87,60 +56,66 @@ class EditNoteViewModel @Inject constructor(
                 }
             }
 
-            isLoading = false
-        }
-    }
-
-    fun onTitleChange(value: String) { title = value }
-    fun onSubtitleChange(value: String) { subtitle = value }
-    fun onContentChange(value: String) { content = value }
-    fun onTagChange(value: String) { selectedTag = value }
-    fun onImageSelected(uri: String?) { selectedImageUri = uri }
-    fun removeImage() { selectedImageUri = null }
-
-    fun toggleReminderDay(dayOfWeek: Int) {
-        reminders = reminders.map {
-            if (it.dayOfWeek == dayOfWeek) it.copy(enabled = !it.enabled) else it
-        }
-    }
-
-    fun updateReminderTime(dayOfWeek: Int, hour: Int, minute: Int) {
-        reminders = reminders.map {
-            if (it.dayOfWeek == dayOfWeek) {
-                it.copy(hour = hour, minute = minute)
+            if (note != null) {
+                updateFormState(
+                    NoteEditorFormState(
+                        title = note.title,
+                        subtitle = note.subtitle,
+                        content = note.content,
+                        selectedTag = note.tag,
+                        selectedImageUri = note.imageUri,
+                        reminders = mergedReminders,
+                        isLoading = false,
+                        errorMessage = null
+                    )
+                )
             } else {
-                it
+                updateFormState(
+                    NoteEditorFormState(
+                        reminders = mergedReminders,
+                        isLoading = false
+                    )
+                )
             }
         }
     }
 
-    fun updateNote(onSaved: () -> Unit) {
+    fun updateNote() {
         val note = originalNote ?: return
+        val state = uiState.value
 
         viewModelScope.launch {
             updateNoteUseCase(
                 originalNote = note,
-                title = title,
-                subtitle = subtitle,
-                content = content,
-                tag = selectedTag,
-                imageUri = selectedImageUri,
-                reminders = reminders
+                title = state.title,
+                subtitle = state.subtitle,
+                content = state.content,
+                tag = state.selectedTag,
+                imageUri = state.selectedImageUri,
+                reminders = state.reminders
             ).onSuccess {
-                onSaved()
-            }.onFailure {
-                errorMessage = it.message
+                sendEvent(NoteEditorEvent.Saved)
+            }.onFailure { throwable ->
+                val message = throwable.message ?: "Aktualisieren fehlgeschlagen."
+                setError(message)
+                sendEvent(NoteEditorEvent.ShowError(message))
             }
         }
     }
 
-    fun deleteNote(onDeleted: () -> Unit) {
+    fun deleteNote() {
         val note = originalNote ?: return
 
         viewModelScope.launch {
             deleteNoteUseCase(note)
-                .onSuccess { onDeleted() }
-                .onFailure { errorMessage = it.message }
+                .onSuccess {
+                    sendEvent(NoteEditorEvent.Deleted)
+                }
+                .onFailure { throwable ->
+                    val message = throwable.message ?: "Löschen fehlgeschlagen."
+                    setError(message)
+                    sendEvent(NoteEditorEvent.ShowError(message))
+                }
         }
     }
 }
