@@ -10,7 +10,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.production.noteflow.app.navigation.Routes
 import com.production.noteflow.presentation.screen.create.CreateNoteScreen
 import com.production.noteflow.presentation.screen.create.CreateNoteViewModel
 import com.production.noteflow.presentation.screen.dashboard.DashboardScreen

@@ -6,25 +6,25 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.production.noteflow.data.local.room.entities.NoteEntity
-import com.production.noteflow.data.local.room.entities.ReminderEntity
-import com.production.noteflow.data.repository.NoteRepository
-import com.production.noteflow.data.repository.ReminderRepository
-import com.production.noteflow.presentation.model.ReminderDraft
-import com.production.noteflow.services.reminder.ReminderScheduler
 import com.production.noteflow.app.navigation.Routes
+import com.production.noteflow.domain.model.Note
+import com.production.noteflow.domain.model.ReminderDraftFactory
+import com.production.noteflow.domain.usecase.note.DeleteNoteUseCase
+import com.production.noteflow.domain.usecase.note.GetNoteByIdUseCase
+import com.production.noteflow.domain.usecase.note.UpdateNoteUseCase
+import com.production.noteflow.domain.usecase.reminder.GetRemindersForNoteOnceUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 @HiltViewModel
 class EditNoteViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val noteRepository: NoteRepository,
-    private val reminderRepository: ReminderRepository,
-    private val reminderScheduler: ReminderScheduler
+    private val getNoteByIdUseCase: GetNoteByIdUseCase,
+    private val getRemindersForNoteOnceUseCase: GetRemindersForNoteOnceUseCase,
+    private val updateNoteUseCase: UpdateNoteUseCase,
+    private val deleteNoteUseCase: DeleteNoteUseCase
 ) : ViewModel() {
 
     private val noteId: String = checkNotNull(savedStateHandle[Routes.NOTE_ID])
@@ -47,10 +47,13 @@ class EditNoteViewModel @Inject constructor(
     var selectedImageUri by mutableStateOf<String?>(null)
         private set
 
-    var reminders by mutableStateOf(defaultReminderDrafts())
+    var reminders by mutableStateOf(ReminderDraftFactory.defaultReminderDrafts())
         private set
 
-    private var originalNote: NoteEntity? = null
+    var errorMessage by mutableStateOf<String?>(null)
+        private set
+
+    private var originalNote: Note? = null
 
     init {
         loadNote()
@@ -58,8 +61,8 @@ class EditNoteViewModel @Inject constructor(
 
     private fun loadNote() {
         viewModelScope.launch {
-            val note = noteRepository.getNoteById(noteId).first()
-            val reminderEntities = reminderRepository.getRemindersForNoteOnce(noteId)
+            val note = getNoteByIdUseCase(noteId).first()
+            val reminderModels = getRemindersForNoteOnceUseCase(noteId)
 
             originalNote = note
 
@@ -71,8 +74,8 @@ class EditNoteViewModel @Inject constructor(
                 selectedImageUri = note.imageUri
             }
 
-            reminders = defaultReminderDrafts().map { draft ->
-                val existing = reminderEntities.firstOrNull { it.dayOfWeek == draft.dayOfWeek }
+            reminders = ReminderDraftFactory.defaultReminderDrafts().map { draft ->
+                val existing = reminderModels.firstOrNull { it.dayOfWeek == draft.dayOfWeek }
                 if (existing != null) {
                     draft.copy(
                         enabled = true,
@@ -105,45 +108,29 @@ class EditNoteViewModel @Inject constructor(
         reminders = reminders.map {
             if (it.dayOfWeek == dayOfWeek) {
                 it.copy(hour = hour, minute = minute)
-            } else it
+            } else {
+                it
+            }
         }
     }
 
     fun updateNote(onSaved: () -> Unit) {
         val note = originalNote ?: return
-        if (title.isBlank()) return
 
         viewModelScope.launch {
-            noteRepository.updateNote(
-                note.copy(
-                    title = title.trim(),
-                    subtitle = subtitle.trim(),
-                    content = content.trim(),
-                    tag = selectedTag,
-                    imageUri = selectedImageUri
-                )
-            )
-
-            val oldReminders = reminderRepository.getRemindersForNoteOnce(noteId)
-            oldReminders.forEach(reminderScheduler::cancel)
-
-            val newReminders = reminders
-                .filter { it.enabled }
-                .map {
-                    ReminderEntity(
-                        id = UUID.randomUUID().toString(),
-                        noteId = noteId,
-                        dayOfWeek = it.dayOfWeek,
-                        hour = it.hour,
-                        minute = it.minute,
-                        enabled = true
-                    )
-                }
-
-            reminderRepository.replaceRemindersForNote(noteId, newReminders)
-            newReminders.forEach(reminderScheduler::schedule)
-
-            onSaved()
+            updateNoteUseCase(
+                originalNote = note,
+                title = title,
+                subtitle = subtitle,
+                content = content,
+                tag = selectedTag,
+                imageUri = selectedImageUri,
+                reminders = reminders
+            ).onSuccess {
+                onSaved()
+            }.onFailure {
+                errorMessage = it.message
+            }
         }
     }
 
@@ -151,22 +138,9 @@ class EditNoteViewModel @Inject constructor(
         val note = originalNote ?: return
 
         viewModelScope.launch {
-            val oldReminders = reminderRepository.getRemindersForNoteOnce(noteId)
-            oldReminders.forEach(reminderScheduler::cancel)
-            noteRepository.deleteNote(note)
-            onDeleted()
+            deleteNoteUseCase(note)
+                .onSuccess { onDeleted() }
+                .onFailure { errorMessage = it.message }
         }
-    }
-
-    private companion object {
-        fun defaultReminderDrafts() = listOf(
-            ReminderDraft(1, false, 9, 0),
-            ReminderDraft(2, false, 9, 0),
-            ReminderDraft(3, false, 9, 0),
-            ReminderDraft(4, false, 9, 0),
-            ReminderDraft(5, false, 9, 0),
-            ReminderDraft(6, false, 9, 0),
-            ReminderDraft(7, false, 9, 0)
-        )
     }
 }

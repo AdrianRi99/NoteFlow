@@ -1,24 +1,25 @@
-package com.production.noteflow.services.reminder
+package com.production.noteflow.service.reminder
 
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.production.noteflow.data.local.room.entities.ReminderEntity
+import com.production.noteflow.domain.model.Reminder
+import com.production.noteflow.domain.scheduler.ReminderScheduler
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ReminderScheduler @Inject constructor(
+class ReminderSchedulerImpl @Inject constructor(
     @ApplicationContext private val context: Context
-) {
+) : ReminderScheduler {
 
     private val alarmManager =
         context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-    fun schedule(reminder: ReminderEntity) {
+    override fun schedule(reminder: Reminder) {
         alarmManager.setAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             nextTriggerMillis(reminder),
@@ -26,11 +27,11 @@ class ReminderScheduler @Inject constructor(
         )
     }
 
-    fun cancel(reminder: ReminderEntity) {
+    override fun cancel(reminder: Reminder) {
         alarmManager.cancel(pendingIntent(reminder))
     }
 
-    private fun pendingIntent(reminder: ReminderEntity): PendingIntent {
+    private fun pendingIntent(reminder: Reminder): PendingIntent {
         val intent = Intent(context, ReminderReceiver::class.java).apply {
             putExtra(ReminderReceiver.EXTRA_REMINDER_ID, reminder.id)
             putExtra(ReminderReceiver.EXTRA_NOTE_ID, reminder.noteId)
@@ -44,7 +45,7 @@ class ReminderScheduler @Inject constructor(
         )
     }
 
-    private fun nextTriggerMillis(reminder: ReminderEntity): Long {
+    private fun nextTriggerMillis(reminder: Reminder): Long {
         val now = Calendar.getInstance()
         val target = Calendar.getInstance().apply {
             firstDayOfWeek = Calendar.MONDAY

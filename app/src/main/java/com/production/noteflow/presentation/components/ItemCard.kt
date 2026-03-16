@@ -19,11 +19,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.production.noteflow.data.local.room.entities.NoteEntity
+import com.production.noteflow.domain.model.Note
 
 @Composable
 fun ItemCard(
-    item: NoteEntity,
+    item: Note,
     onClick: () -> Unit
 ) {
     ElevatedCard(

@@ -1,4 +1,4 @@
-package com.production.noteflow.services.worker
+package com.production.noteflow.service.worker
 
 import android.content.Context
 import android.os.Build
@@ -6,7 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import com.production.noteflow.data.repository.QuoteRepository
+import com.production.noteflow.domain.repository.QuoteRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 

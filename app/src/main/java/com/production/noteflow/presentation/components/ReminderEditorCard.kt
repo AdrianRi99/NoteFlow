@@ -18,7 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import com.production.noteflow.presentation.model.ReminderDraft
+import com.production.noteflow.domain.model.ReminderDraft
 import com.production.noteflow.presentation.model.Weekdays
 
 @Composable

@@ -27,7 +27,7 @@
             </intent-filter>
         </activity>
         <receiver
-            android:name=".services.reminder.ReminderReceiver"
+            android:name=".service.reminder.ReminderReceiver"
             android:exported="false" />
         <provider
             android:name="androidx.startup.InitializationProvider"

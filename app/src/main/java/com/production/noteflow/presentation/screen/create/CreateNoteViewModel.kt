@@ -1,27 +1,19 @@
 package com.production.noteflow.presentation.screen.create
 
-
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.production.noteflow.data.local.room.entities.NoteEntity
-import com.production.noteflow.data.local.room.entities.ReminderEntity
-import com.production.noteflow.data.repository.NoteRepository
-import com.production.noteflow.data.repository.ReminderRepository
-import com.production.noteflow.presentation.model.ReminderDraft
-import com.production.noteflow.services.reminder.ReminderScheduler
+import com.production.noteflow.domain.model.ReminderDraftFactory
+import com.production.noteflow.domain.usecase.note.CreateNoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.util.UUID
-import javax.inject.Inject
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
 class CreateNoteViewModel @Inject constructor(
-    private val noteRepository: NoteRepository,
-    private val reminderRepository: ReminderRepository,
-    private val reminderScheduler: ReminderScheduler
+    private val createNoteUseCase: CreateNoteUseCase
 ) : ViewModel() {
 
     var title by mutableStateOf("")
@@ -39,7 +31,11 @@ class CreateNoteViewModel @Inject constructor(
     var selectedImageUri by mutableStateOf<String?>(null)
         private set
 
-    var reminders by mutableStateOf(defaultReminderDrafts())
+
+    var reminders by mutableStateOf(ReminderDraftFactory.defaultReminderDrafts())
+        private set
+
+    var errorMessage by mutableStateOf<String?>(null)
         private set
 
     fun onTitleChange(value: String) { title = value }
@@ -59,59 +55,26 @@ class CreateNoteViewModel @Inject constructor(
         reminders = reminders.map {
             if (it.dayOfWeek == dayOfWeek) {
                 it.copy(hour = hour, minute = minute)
-            } else it
+            } else {
+                it
+            }
         }
     }
 
     fun saveNote(onSaved: () -> Unit) {
-        if (title.isBlank()) return
-
         viewModelScope.launch {
-            val noteId = UUID.randomUUID().toString()
-
-            noteRepository.insertNote(
-                NoteEntity(
-                    id = noteId,
-                    title = title.trim(),
-                    subtitle = subtitle.trim(),
-                    tag = selectedTag,
-                    content = content.trim(),
-                    createdAt = System.currentTimeMillis(),
-                    imageUri = selectedImageUri
-                )
-            )
-
-            val reminderEntities = reminders
-                .filter { it.enabled }
-                .map {
-                    ReminderEntity(
-                        id = UUID.randomUUID().toString(),
-                        noteId = noteId,
-                        dayOfWeek = it.dayOfWeek,
-                        hour = it.hour,
-                        minute = it.minute,
-                        enabled = true
-                    )
-                }
-
-            if (reminderEntities.isNotEmpty()) {
-                reminderRepository.replaceRemindersForNote(noteId, reminderEntities)
-                reminderEntities.forEach(reminderScheduler::schedule)
+            createNoteUseCase(
+                title = title,
+                subtitle = subtitle,
+                content = content,
+                tag = selectedTag,
+                imageUri = selectedImageUri,
+                reminders = reminders
+            ).onSuccess {
+                onSaved()
+            }.onFailure {
+                errorMessage = it.message
             }
-
-            onSaved()
         }
-    }
-
-    private companion object {
-        fun defaultReminderDrafts() = listOf(
-            ReminderDraft(1, false, 9, 0),
-            ReminderDraft(2, false, 9, 0),
-            ReminderDraft(3, false, 9, 0),
-            ReminderDraft(4, false, 9, 0),
-            ReminderDraft(5, false, 9, 0),
-            ReminderDraft(6, false, 9, 0),
-            ReminderDraft(7, false, 9, 0)
-        )
     }
 }

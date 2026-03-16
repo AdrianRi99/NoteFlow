@@ -5,7 +5,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.production.noteflow.services.worker.QuoteWorkScheduler
+import com.production.noteflow.service.worker.QuoteWorkScheduler
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 

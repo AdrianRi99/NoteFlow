@@ -1,4 +1,4 @@
-package com.production.noteflow.services.reminder
+package com.production.noteflow.service.reminder
 
 import android.Manifest
 import android.app.NotificationChannel

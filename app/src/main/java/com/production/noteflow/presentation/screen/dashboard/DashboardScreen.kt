@@ -45,7 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
-import com.production.noteflow.data.local.room.entities.NoteEntity
+import com.production.noteflow.domain.model.Note
 import com.production.noteflow.presentation.components.ItemCard
 import com.production.noteflow.presentation.components.StatCard
 
@@ -53,11 +53,11 @@ import com.production.noteflow.presentation.components.StatCard
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
-    items: List<NoteEntity>,
+    items: List<Note>,
     quoteUiState: QuoteUiState,
     onRefreshQuote: () -> Unit,
     onAddClick: () -> Unit = {},
-    onItemClick: (NoteEntity) -> Unit = {},
+    onItemClick: (Note) -> Unit = {},
 ) {
     var query by rememberSaveable { mutableStateOf("") }
     //rememberSaveable → überlebt Rotation

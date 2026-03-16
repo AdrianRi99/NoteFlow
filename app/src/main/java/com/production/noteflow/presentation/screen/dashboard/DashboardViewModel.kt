@@ -2,10 +2,10 @@ package com.production.noteflow.presentation.screen.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.production.noteflow.data.local.room.entities.NoteEntity
-import com.production.noteflow.data.repository.NoteRepository
-import com.production.noteflow.data.repository.QuoteRepository
 import com.production.noteflow.domain.model.Quote
+import com.production.noteflow.domain.usecase.note.GetNotesUseCase
+import com.production.noteflow.domain.usecase.quote.GetStoredQuoteUseCase
+import com.production.noteflow.domain.usecase.quote.RefreshQuoteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -17,12 +17,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    repository: NoteRepository,
-    private val quoteRepository: QuoteRepository
+    getNotesUseCase: GetNotesUseCase,
+    getStoredQuoteUseCase: GetStoredQuoteUseCase,
+    private val refreshQuoteUseCase: RefreshQuoteUseCase
 ) : ViewModel() {
 
-    val notes: StateFlow<List<NoteEntity>> = repository
-        .getNotes()
+    val notes = getNotesUseCase()
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
@@ -33,7 +33,7 @@ class DashboardViewModel @Inject constructor(
     private val errorMessage = MutableStateFlow<String?>(null)
 
     val quoteUiState: StateFlow<QuoteUiState> = combine(
-        quoteRepository.storedQuote,
+        getStoredQuoteUseCase(),
         isRefreshing,
         errorMessage
     ) { storedQuote, refreshing, error ->
@@ -57,7 +57,7 @@ class DashboardViewModel @Inject constructor(
             isRefreshing.value = true
             errorMessage.value = null
 
-            quoteRepository.refreshQuote(force = false)
+            refreshQuoteUseCase(force = false)
                 .onFailure {
                     if (quoteUiState.value.quote == null) {
                         errorMessage.value = "Zitat konnte nicht geladen werden."
@@ -73,7 +73,7 @@ class DashboardViewModel @Inject constructor(
             isRefreshing.value = true
             errorMessage.value = null
 
-            quoteRepository.refreshQuote(force = true)
+            refreshQuoteUseCase(force = true)
                 .onFailure {
                     errorMessage.value = "Zitat konnte nicht geladen werden."
                 }
@@ -82,3 +82,4 @@ class DashboardViewModel @Inject constructor(
         }
     }
 }
+

@@ -6,6 +6,7 @@ import com.production.noteflow.data.local.datastore.QuotePreferencesDataSource
 import com.production.noteflow.data.remote.api.QuoteApiService
 import com.production.noteflow.data.remote.dto.toDomain
 import com.production.noteflow.domain.model.StoredQuote
+import com.production.noteflow.domain.repository.QuoteRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import java.time.Instant
@@ -15,15 +16,15 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class QuoteRepository @Inject constructor(
+class QuoteRepositoryImpl @Inject constructor(
     private val quoteApiService: QuoteApiService,
     private val quotePreferencesDataSource: QuotePreferencesDataSource
-) {
+) : QuoteRepository {
 
-    val storedQuote: Flow<StoredQuote?> = quotePreferencesDataSource.storedQuote
+    override val storedQuote: Flow<StoredQuote?> = quotePreferencesDataSource.storedQuote
 
     @RequiresApi(Build.VERSION_CODES.O)
-    suspend fun refreshQuote(force: Boolean): Result<Unit> {
+    override suspend fun refreshQuote(force: Boolean): Result<Unit> {
         return runCatching {
             val shouldRefresh = force || !wasUpdatedToday()
             if (!shouldRefresh) return@runCatching
