@@ -46,7 +46,7 @@ fun CreateNoteScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Neue Notiz") },
+                title = { Text("New note") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Zurück")
@@ -61,7 +61,7 @@ fun CreateNoteScreen(
             ExtendedFloatingActionButton(
                 onClick = viewModel::saveNote,
                 icon = { Icon(Icons.Default.Save, contentDescription = null) },
-                text = { Text("Speichern") }
+                text = { Text("Save") }
             )
         }
     ) { padding ->

@@ -109,7 +109,7 @@ fun NoteEditorContent(
                             style = MaterialTheme.typography.titleLarge
                         )
                         Text(
-                            text = "Passe Titel, Inhalt und Kategorie an.",
+                            text = "Adjust the title, content, and more.",
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -193,7 +193,7 @@ fun NoteEditorContent(
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = "Kategorie",
+                    text = "Category",
                     style = MaterialTheme.typography.titleMedium
                 )
 
@@ -218,7 +218,7 @@ fun NoteEditorContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(180.dp),
-            label = { Text("Inhalt") },
+            label = { Text("Content") },
             shape = RoundedCornerShape(16.dp)
         )
 
@@ -309,7 +309,7 @@ private fun ImageAndTextFields(
                 value = title,
                 onValueChange = onTitleChange,
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("Titel") },
+                label = { Text("Title") },
                 singleLine = true,
                 shape = RoundedCornerShape(16.dp)
             )
@@ -318,7 +318,7 @@ private fun ImageAndTextFields(
                 value = subtitle,
                 onValueChange = onSubtitleChange,
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("Kurzbeschreibung") },
+                label = { Text("Short description") },
                 singleLine = true,
                 shape = RoundedCornerShape(16.dp)
             )

@@ -56,6 +56,6 @@ class NoteDetailScreenTest {
             )
         }
 
-        composeRule.onNodeWithText("Diese Notiz wurde nicht gefunden.").assertIsDisplayed()
+        composeRule.onNodeWithText("This note does not exist").assertIsDisplayed()
     }
 }

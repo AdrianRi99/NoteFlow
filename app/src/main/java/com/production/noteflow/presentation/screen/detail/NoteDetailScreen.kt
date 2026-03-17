@@ -50,7 +50,7 @@ fun NoteDetailScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Deine Notiz",
+                        text = "Your note",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -62,7 +62,7 @@ fun NoteDetailScreen(
                 },
                 actions = {
                     IconButton(onClick = onEdit) {
-                        Icon(Icons.Default.Edit, contentDescription = "Bearbeiten")
+                        Icon(Icons.Default.Edit, contentDescription = "Edit")
                     }
                 }
             )
@@ -88,7 +88,7 @@ fun NoteDetailScreen(
                         .padding(24.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Diese Notiz wurde nicht gefunden.")
+                    Text("This note does not exist")
                 }
             }
 
@@ -173,9 +173,9 @@ fun NoteDetailScreen(
                             modifier = Modifier.padding(16.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            Text("Inhalt", style = MaterialTheme.typography.titleMedium)
+                            Text("Content", style = MaterialTheme.typography.titleMedium)
                             Text(
-                                text = note.content.ifBlank { "Kein Inhalt vorhanden." },
+                                text = note.content.ifBlank { "No text available." },
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )

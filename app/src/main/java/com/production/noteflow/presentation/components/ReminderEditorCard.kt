@@ -98,7 +98,7 @@ fun ReminderEditorCard(
 
             if (reminders.none { it.enabled }) {
                 Text(
-                    text = "Keine Reminder ausgewählt.",
+                    text = "No reminders selected",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )

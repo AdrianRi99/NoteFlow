@@ -57,7 +57,7 @@ fun EditNoteScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Notiz bearbeiten") },
+                title = { Text("Edit note") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Zurück")
@@ -77,7 +77,7 @@ fun EditNoteScreen(
             ExtendedFloatingActionButton(
                 onClick = viewModel::updateNote,
                 icon = { Icon(Icons.Default.Save, contentDescription = null) },
-                text = { Text("Speichern") }
+                text = { Text("Update") }
             )
         }
     ) { padding ->
@@ -115,8 +115,8 @@ fun EditNoteScreen(
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Notiz löschen?") },
-            text = { Text("Diese Aktion kann nicht rückgängig gemacht werden.") },
+            title = { Text("Delete note?") },
+            text = { Text("This action cannot be undone.") },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -124,12 +124,12 @@ fun EditNoteScreen(
                         viewModel.deleteNote()
                     }
                 ) {
-                    Text("Löschen")
+                    Text("Delete")
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
-                    Text("Abbrechen")
+                    Text("Cancel")
                 }
             }
         )

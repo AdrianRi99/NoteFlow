@@ -122,11 +122,11 @@ fun DashboardScreen(
                                         verticalArrangement = Arrangement.spacedBy(12.dp)
                                     ) {
                                         Text(
-                                            text = "Willkommen zurück 👋",
+                                            text = "Welcome back 👋",
                                             style = MaterialTheme.typography.titleLarge
                                         )
                                         Text(
-                                            text = "Erstelle und organisiere deine Notizen übersichtlich an einem Ort.",
+                                            text = "Create and organize your notes clearly in one place.",
                                             style = MaterialTheme.typography.bodyMedium,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
@@ -143,7 +143,7 @@ fun DashboardScreen(
                                                     contentDescription = null
                                                 )
                                             },
-                                            placeholder = { Text("Suche…") }
+                                            placeholder = { Text("Search…") }
                                         )
                                     }
                                 }
@@ -204,7 +204,7 @@ fun DashboardScreen(
 
                                             else -> {
                                                 Text(
-                                                    text = quoteUiState.errorMessage ?: "Kein Zitat verfügbar.",
+                                                    text = quoteUiState.errorMessage ?: "No quote available",
                                                     style = MaterialTheme.typography.bodyMedium,
                                                     color = MaterialTheme.colorScheme.error
                                                 )
@@ -277,7 +277,7 @@ fun DashboardScreen(
 
             item {
                 Text(
-                    "Aktuell",
+                    "Recent",
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(top = 4.dp)
                 )
