@@ -119,7 +119,7 @@ fun DashboardScreen(
                                 ) {
                                     Column(
                                         modifier = Modifier.padding(16.dp),
-                                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                                        verticalArrangement = Arrangement.spacedBy(6.dp)
                                     ) {
                                         Text(
                                             text = "Welcome back 👋",
@@ -134,7 +134,9 @@ fun DashboardScreen(
                                         OutlinedTextField(
                                             value = query,
                                             onValueChange = { query = it },
-                                            modifier = Modifier.fillMaxWidth(),
+                                            modifier = Modifier
+                                                .padding(top = 10.dp)
+                                                .fillMaxWidth(),
                                             singleLine = true,
                                             shape = RoundedCornerShape(14.dp),
                                             leadingIcon = {

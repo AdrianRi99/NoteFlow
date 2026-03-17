@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -146,17 +147,19 @@ fun NoteDetailScreen(
 
                                 Column(
                                     modifier = Modifier.weight(1f),
-                                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                                    verticalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
                                     Text(
                                         text = note.title,
-                                        style = MaterialTheme.typography.titleLarge
+                                        fontSize = 26.sp
+                                        //style = MaterialTheme.typography.titleLarge
                                     )
 
                                     if (note.subtitle.isNotBlank()) {
                                         Text(
                                             text = note.subtitle,
-                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontSize = 15.sp,
+                                                    //style = MaterialTheme.typography.bodyMedium,
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
                                     }
@@ -176,7 +179,8 @@ fun NoteDetailScreen(
                             Text("Content", style = MaterialTheme.typography.titleMedium)
                             Text(
                                 text = note.content.ifBlank { "No text available." },
-                                style = MaterialTheme.typography.bodyMedium,
+                                fontSize  = 14.sp,
+                                //style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
@@ -209,7 +213,8 @@ fun NoteDetailScreen(
 
                                     Text(
                                         text = "$dayLabel • %02d:%02d".format(reminder.hour, reminder.minute),
-                                        style = MaterialTheme.typography.bodyMedium,
+//                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontSize  = 14.sp,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
