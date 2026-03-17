@@ -94,4 +94,14 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.2")
+    testImplementation("app.cash.turbine:turbine:1.2.1")
+    testImplementation("io.mockk:mockk:1.14.9")
+
+    androidTestImplementation("androidx.navigation:navigation-testing:2.9.7")
+    androidTestImplementation("androidx.room:room-testing:2.8.4")
+    androidTestImplementation("com.google.dagger:hilt-android-testing:2.57.2")
+
+    kspAndroidTest("com.google.dagger:hilt-android-compiler:2.57.2")
 }
